@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
+import { CustomError } from 'src/common/error_handler/custom-error';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -14,7 +15,7 @@ export class UserService {
     });
 
     if (isUser) {
-      throw new Error('User already exists');
+      throw new CustomError(HttpStatus.BAD_REQUEST, 'User already exists');
     }
 
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
